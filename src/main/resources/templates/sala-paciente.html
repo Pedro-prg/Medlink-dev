@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Sala de Reunião - Paciente</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(120deg, #27ae60 0%, #a8e063 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            max-width: 420px;
+            margin: 60px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 32px #0002;
+            padding: 2.5rem 2rem 2rem 2rem;
+            text-align: center;
+        }
+        h2 {
+            color: #219150;
+            margin-bottom: 1.2rem;
+        }
+        p {
+            color: #34495e;
+            font-size: 1.1rem;
+        }
+        .icon-area {
+            margin: 2rem 0 1.5rem 0;
+        }
+        .icon-area img {
+            width: 90px;
+            border-radius: 50%;
+            background: #eafaf1;
+            padding: 1rem;
+            box-shadow: 0 2px 8px #27ae6022;
+        }
+        .info {
+            color: #219150;
+            margin-top: 1.2rem;
+            font-size: 1rem;
+            background: #eafaf1;
+            border-radius: 8px;
+            padding: 0.7rem;
+        }
+        .btn {
+            background: #27ae60;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.8rem 2.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 2.2rem;
+            box-shadow: 0 2px 8px #27ae6033;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .btn:hover {
+            background: #219150;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Sala de Reunião</h2>
+        <p>Você está representando o <b>Paciente</b> nesta reunião.</p>
+        <div class="icon-area">
+            <img src="https://img.icons8.com/ios-filled/100/27ae60/patient-oxygen-mask.png" alt="Paciente">
+        </div>
+        <div class="info">
+            <b>Simulação:</b> Aqui seria exibida a videoconferência ou chat da consulta.
+        </div>
+        <a th:href="@{/historico/paciente(pacienteId=${pacienteId})}" class="btn">Voltar para Histórico do Paciente</a>
+    </div>
+</body>
+</html>
