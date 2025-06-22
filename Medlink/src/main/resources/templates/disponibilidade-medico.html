@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Disponibilidade do Médico</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: #f5f7fa;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .container {
+            background: #fff;
+            max-width: 500px;
+            margin: 40px auto;
+            padding: 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
+        }
+        h2 {
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        label {
+            font-weight: 500;
+            color: #34495e;
+        }
+        select, input[type="time"] {
+            padding: 0.5rem;
+            border-radius: 6px;
+            border: 1px solid #bdc3c7;
+            font-size: 1rem;
+        }
+        .btn-definir {
+            background: #3498db;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 0.7rem 0;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-definir:hover {
+            background: #217dbb;
+        }
+        .disponibilidades {
+            margin-top: 2rem;
+        }
+        .disponibilidades h3 {
+            color: #2980b9;
+            margin-bottom: 0.7rem;
+        }
+        .disponibilidades ul {
+            list-style: none;
+            padding: 0;
+        }
+        .disponibilidades li {
+            background: #ecf0f1;
+            margin-bottom: 0.5rem;
+            padding: 0.7rem 1rem;
+            border-radius: 6px;
+            color: #2c3e50;
+            font-size: 1rem;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 1.5rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            color: #217dbb;
+        }
+    </style>
+</head>
+<body>
+    <div th:if="${erro}" style="color:#e74c3c; font-weight:bold; margin-bottom:1rem;" th:text="${erro}"></div>
+    <div class="container">
+        <h2>Definir Disponibilidade</h2>
+        <form th:action="@{/medico/disponibilidade}" method="post">
+            <input type="hidden" name="medicoId" th:value="${medicoId}">
+            <label>Dia da Semana:</label>
+            <select name="diaSemana" required>
+                <option value="SEGUNDA">Segunda</option>
+                <option value="TERCA">Terça</option>
+                <option value="QUARTA">Quarta</option>
+                <option value="QUINTA">Quinta</option>
+                <option value="SEXTA">Sexta</option>
+                <option value="SABADO">Sábado</option>
+                <option value="DOMINGO">Domingo</option>
+            </select>
+            <label>Hora Início:</label>
+            <input type="time" name="horaInicio" required>
+            <label>Hora Fim:</label>
+            <input type="time" name="horaFim" required>
+            <button type="submit" class="btn-definir">Definir Horário</button>
+        </form>
+        <div class="disponibilidades">
+            <h3>Disponibilidades cadastradas:</h3>
+            <ul>
+                <li th:each="d : ${disponibilidades}">
+                    <span th:text="${d.diaSemana}"></span>:
+                    <span th:text="${d.horaInicio}"></span> à
+                    <span th:text="${d.horaFim}"></span>
+                    <form th:action="@{/medico/disponibilidade/remover}" method="post" style="display:inline;">
+                        <input type="hidden" name="id" th:value="${d.id}">
+                        <input type="hidden" name="medicoId" th:value="${medicoId}">
+                        <button type="submit" style="background:#e74c3c;color:white;border:none;border-radius:4px;padding:2px 8px;cursor:pointer;margin-left:10px;">Remover</button>
+                    </form>
+                    <div style="margin-top:0.5rem; font-size:0.95em; color:#2980b9;">
+                        <b>Horários gerados:</b>
+                        <span th:if="${#lists.isEmpty(horariosPorDisponibilidade[d.id])}">Nenhum horário válido</span>
+                        <span th:each="h, iter : ${horariosPorDisponibilidade[d.id]}" th:text="${h}"></span>
+                        <span th:if="${!#lists.isEmpty(horariosPorDisponibilidade[d.id])}" th:remove="tag"> | </span>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <a th:href="@{/reunioes(medicoId=${medicoId})}" class="back-link">Voltar</a>
+    </div>
+</body>
+</html>

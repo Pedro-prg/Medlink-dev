@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Histórico de Reuniões</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="container">
+        <h2>Histórico de Reuniões</h2>
+        <table>
+            <tr>
+                <th>Data/Hora</th>
+                <th th:text="${#lists.isEmpty(historico) ? '' : (historico[0].medico != null ? 'Médico' : 'Paciente')}"></th>
+            </tr>
+            <tr th:each="r : ${historico}">
+                <td th:text="${#temporals.format(r.dataHora, 'dd/MM/yyyy HH:mm')}"></td>
+                <td th:text="${r.medico != null ? r.medico.nome : r.paciente.nome}"></td>
+            </tr>
+        </table>
+        <a th:if="${pacienteId != null}" th:href="@{/reunioes(pacienteId=${pacienteId})}">Voltar</a>
+        <a th:if="${medicoId != null}" th:href="@{/reunioes(medicoId=${medicoId})}">Voltar</a>
+    </div>
+</body>
+</html>
