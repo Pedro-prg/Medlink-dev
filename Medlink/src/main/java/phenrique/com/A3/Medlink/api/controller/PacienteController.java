@@ -25,13 +25,13 @@ public class PacienteController {
         try {
             Paciente novoPaciente = new Paciente();
             novoPaciente.setNome(pacienteInput.getNome());
+            novoPaciente.setCpf(pacienteInput.getCpf());
             novoPaciente.setEmail(pacienteInput.getEmail());
             novoPaciente.setSenha(pacienteInput.getSenha());
-            novoPaciente.setTelefone(pacienteInput.getTelefone());
             
             pacienteService.savePaciente(novoPaciente);
             return new ResponseEntity<>(novoPaciente, HttpStatus.CREATED);
-        } catch (Exception e) {
+        } catch (RuntimeException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -56,12 +56,20 @@ public class PacienteController {
     @PutMapping("/atualizar/{id}")
     public ResponseEntity<?> atualizarPaciente(@PathVariable Long id, @Valid @RequestBody PacienteInputDTO pacienteInput) {
         try {
-            Paciente pacienteAtualizado = new Paciente();
-            pacienteAtualizado.setId(id);
+            // Primeiro buscar o paciente pelo ID
+            Optional<Paciente> pacienteOpt = pacienteService.listarTodos().stream()
+                .filter(p -> p.getId().equals(id))
+                .findFirst();
+            
+            if (pacienteOpt.isEmpty()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            Paciente pacienteAtualizado = pacienteOpt.get();
             pacienteAtualizado.setNome(pacienteInput.getNome());
+            pacienteAtualizado.setCpf(pacienteInput.getCpf());
             pacienteAtualizado.setEmail(pacienteInput.getEmail());
             pacienteAtualizado.setSenha(pacienteInput.getSenha());
-            pacienteAtualizado.setTelefone(pacienteInput.getTelefone());
             
             pacienteService.atualizarPaciente(pacienteAtualizado);
             return ResponseEntity.ok(pacienteAtualizado);

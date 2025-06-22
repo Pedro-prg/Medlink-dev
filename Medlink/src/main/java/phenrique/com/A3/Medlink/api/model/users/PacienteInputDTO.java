@@ -10,33 +10,47 @@ public class PacienteInputDTO {
     @Size(min = 3, max = 50)
     private String nome;
 
-    
+    @NotBlank(message = "O CPF é obrigatório")
+    private String cpf;
 
     @NotBlank(message = "Digite seu Email")
     @Email(message = "Tem que ser um email válido")
     private String email;
 
-    @NotBlank(message = "A senha tem que possuir ao minimo 8 caracteres")
-    @Size(min = 8, max = 50, message = "50 é o maximo de caracteres disponível ")
+    @NotBlank(message = "Digite sua senha")
+    @Size(min = 8, message = "A senha deve ter pelo menos 8 caracteres")
     private String senha;
 
-    String telefone;
+    // Getters e Setters
+    public String getNome() {
+        return nome;
+    }
 
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
 
     public String getEmail() {
         return email;
     }
 
-    public String getNome() {
-        return nome;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public String getSenha() {
         return senha;
     }
 
-    public String getTelefone() {
-        return telefone;
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
-
 }

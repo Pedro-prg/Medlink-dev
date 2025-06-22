@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Perfil do Médico | MedLink</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .perfil-container {
+            background: white;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .info-group {
+            margin-bottom: 1.2rem;
+        }
+        .info-label {
+            color: #34495e;
+            font-weight: 600;
+        }
+        .info-value {
+            color: #2c3e50;
+            margin-left: 0.5rem;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .descricao {
+            background: #f9f9f9;
+            border-radius: 6px;
+            padding: 1rem;
+            margin-top: 0.3rem;
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+    <div class="perfil-container">
+        <h2>Perfil do Médico</h2>
+        <div class="info-group">
+            <span class="info-label">Nome:</span>
+            <span class="info-value" th:text="${medico.nome}"></span>
+        </div>
+        <div class="info-group">
+            <span class="info-label">E-mail:</span>
+            <span class="info-value" th:text="${medico.email}"></span>
+        </div>
+        <div class="info-group">
+            <span class="info-label">CRM:</span>
+            <span class="info-value" th:text="${medico.crm}"></span>
+        </div>
+        <div class="info-group" th:if="${medico.especialidades}">
+            <span class="info-label">Especialidades:</span>
+            <div class="descricao" th:text="${medico.especialidades}"></div>
+        </div>
+        <div class="info-group" th:if="${medico.experiencias}">
+            <span class="info-label">Experiências:</span>
+            <div class="descricao" th:text="${medico.experiencias}"></div>
+        </div>
+        <div class="info-group" th:if="${medico.trabalhosPassados}">
+            <span class="info-label">Trabalhos Passados:</span>
+            <div class="descricao" th:text="${medico.trabalhosPassados}"></div>
+        </div>
+        <a href="javascript:history.back()" class="back-link">Voltar</a>
+        <a th:if="${isMedicoLogado}" th:href="@{'/medico/' + ${medico.id} + '/editar'}" class="back-link" style="color: #27ae60;">Editar Perfil</a>
+    </div>
+</body>
+</html>

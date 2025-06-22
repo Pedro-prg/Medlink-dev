@@ -7,6 +7,7 @@ import phenrique.com.A3.Medlink.domain.repository.MedicoRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class MedicoService {
@@ -16,12 +17,11 @@ public class MedicoService {
     
     // Salvar um novo médico
     public Medico salvar(Medico medico) {
-        if (medicoRepository.existsByCrm(medico.getCrm())) {
-            throw new RuntimeException("Já existe um médico com este CRM");
+        // Verificar se já existe médico com o mesmo email
+        if (medicoRepository.findByEmail(medico.getEmail()).isPresent()) {
+            throw new RuntimeException("Já existe um médico cadastrado com este email");
         }
-        if (medicoRepository.existsByEmail(medico.getEmail())) {
-            throw new RuntimeException("Já existe um médico com este email");
-        }
+        
         return medicoRepository.save(medico);
     }
     
@@ -32,7 +32,10 @@ public class MedicoService {
     
     // Buscar médico por CRM
     public Optional<Medico> buscarPorCrm(String crm) {
-        return medicoRepository.findByCrm(crm);
+        // Como o modelo antigo não tem findByCrm, vamos buscar todos e filtrar
+        return medicoRepository.findAll().stream()
+            .filter(m -> crm.equals(m.getCrm()))
+            .findFirst();
     }
     
     // Listar todos os médicos
@@ -42,7 +45,10 @@ public class MedicoService {
     
     // Buscar médicos por nome
     public List<Medico> buscarPorNome(String nome) {
-        return medicoRepository.findByNomeContainingIgnoreCase(nome);
+        // Como o modelo antigo não tem findByNomeContainingIgnoreCase, vamos buscar todos e filtrar
+        return medicoRepository.findAll().stream()
+            .filter(m -> m.getNome().toLowerCase().contains(nome.toLowerCase()))
+            .collect(Collectors.toList());
     }
     
     // Atualizar médico

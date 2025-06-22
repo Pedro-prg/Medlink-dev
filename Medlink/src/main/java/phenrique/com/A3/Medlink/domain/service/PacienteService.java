@@ -5,6 +5,7 @@ import phenrique.com.A3.Medlink.domain.repository.PacienteRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -31,7 +32,14 @@ public class PacienteService {
     }
 
     public List<Paciente> findByNome(String nome) {
-        return pacienteRepository.findByNome(nome);
+        // Como o modelo antigo não tem findByNome, vamos buscar todos e filtrar
+        return pacienteRepository.findAll().stream()
+            .filter(p -> p.getNome().toLowerCase().contains(nome.toLowerCase()))
+            .collect(Collectors.toList());
+    }
+
+    public List<Paciente> listarTodos() {
+        return pacienteRepository.findAll();
     }
 
     public void deletarPaciente(Long id) {

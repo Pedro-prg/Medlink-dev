@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medlink - Sistema de Agendamento Médico</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .hero-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 3rem;
+            margin: 2rem 0;
+            color: white;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 25px;
+            padding: 12px 30px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section text-center">
+            <h1 class="display-4 mb-4">
+                <i class="fas fa-heartbeat me-3"></i>
+                Medlink
+            </h1>
+            <p class="lead mb-4">Sistema de Agendamento Médico - Conectando pacientes e médicos de forma simples e eficiente</p>
+            <a href="/reuniao/agendar" class="btn btn-primary btn-lg">
+                <i class="fas fa-calendar-plus me-2"></i>
+                Agendar Consulta
+            </a>
+        </div>
+
+        <!-- Features Section -->
+        <div class="row mt-5">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <h5 class="card-title">Médicos Especializados</h5>
+                        <p class="card-text">Acesso a uma rede de médicos qualificados em diversas especialidades médicas.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h5 class="card-title">Agendamento Flexível</h5>
+                        <p class="card-text">Agende consultas de acordo com sua disponibilidade e a do médico escolhido.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 text-center p-4">
+                    <div class="card-body">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h5 class="card-title">Segurança e Privacidade</h5>
+                        <p class="card-text">Seus dados são protegidos com os mais altos padrões de segurança.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="row mt-5">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h4 class="mb-0">
+                            <i class="fas fa-bolt me-2"></i>
+                            Ações Rápidas
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <a href="/reuniao/agendar" class="btn btn-primary w-100">
+                                    <i class="fas fa-calendar-plus me-2"></i>
+                                    Nova Consulta
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/medico" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-user-md me-2"></i>
+                                    Gerenciar Médicos
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/paciente" class="btn btn-outline-primary w-100">
+                                    <i class="fas fa-user me-2"></i>
+                                    Gerenciar Pacientes
+                                </a>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <a href="/reuniao/debug/disponibilidade?medicoId=1&data=2024-12-20" class="btn btn-outline-info w-100">
+                                    <i class="fas fa-bug me-2"></i>
+                                    Debug Disponibilidade
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="text-center mt-5 mb-4">
+            <p class="text-white">
+                <i class="fas fa-code me-2"></i>
+                Desenvolvido com ❤️ para facilitar o agendamento médico
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js"></script>
+</body>
+</html> 
