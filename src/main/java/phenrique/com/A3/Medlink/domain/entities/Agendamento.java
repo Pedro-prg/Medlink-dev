@@ -11,6 +11,7 @@ public class Agendamento {
     private Long id;
 
     @ManyToOne
+<<<<<<< HEAD
     private Medico medico;
 
     @ManyToOne
@@ -18,6 +19,21 @@ public class Agendamento {
 
     private LocalDateTime dataHora;
     private String linkSala;
+=======
+    @JoinColumn(name = "medico_id")
+    private Medico medico;
+
+    @ManyToOne
+    @JoinColumn(name = "paciente_id")
+    private Paciente paciente;
+
+    @Column(name = "data_hora")
+    private LocalDateTime dataHora;
+    
+    @Column(name = "link_sala")
+    private String linkSala;
+    
+>>>>>>> dev
     private boolean finalizado = false;
 
     // Getters e Setters

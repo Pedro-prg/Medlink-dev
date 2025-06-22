@@ -16,5 +16,9 @@ public class Medico {
     // outros campos específicos do médico
     private String especialidades;
     private String experiencias;
+<<<<<<< HEAD
+=======
+    @Column(name = "trabalhos_passados")
+>>>>>>> dev
     private String trabalhosPassados;
 }

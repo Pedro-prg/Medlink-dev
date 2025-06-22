@@ -13,6 +13,12 @@ import phenrique.com.A3.Medlink.domain.repository.DisponibilidadeMedicoRepositor
 import phenrique.com.A3.Medlink.domain.repository.MedicoRepository;
 import phenrique.com.A3.Medlink.domain.repository.PacienteRepository;
 import phenrique.com.A3.Medlink.domain.service.AgendamentoService;
+<<<<<<< HEAD
+=======
+import java.util.stream.Collectors;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+>>>>>>> dev
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -21,10 +27,22 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+<<<<<<< HEAD
+=======
+import java.util.Map;
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import phenrique.com.A3.Medlink.api.common.ValidationUtils;
+>>>>>>> dev
 
 @Controller
 public class ReuniaoController {
 
+<<<<<<< HEAD
+=======
+    private static final Logger logger = LoggerFactory.getLogger(ReuniaoController.class);
+
+>>>>>>> dev
     @Autowired
     private MedicoRepository medicoRepository;
 
@@ -98,13 +116,22 @@ public class ReuniaoController {
                         LocalTime inicio = LocalTime.parse(disp.getHoraInicio());
                         LocalTime fim = LocalTime.parse(disp.getHoraFim());
                         LocalTime hora = inicio;
+<<<<<<< HEAD
                         while (!hora.isAfter(fim.minusMinutes(59))) {
                             LocalDateTime horario = dataBase.withHour(hora.getHour()).withMinute(hora.getMinute());
+=======
+
+                        // CORREÇÃO: Loop simplificado e correto para gerar horários
+                        while (hora.isBefore(fim)) {
+                            LocalDateTime horario = dataBase.withHour(hora.getHour()).withMinute(hora.getMinute());
+
+>>>>>>> dev
                             // Verifica se já existe agendamento nesse horário
                             boolean ocupado = agendamentoRepository.findByMedico(medico).stream().anyMatch(a ->
                                 a.getDataHora().toLocalDate().equals(horario.toLocalDate()) &&
                                 Math.abs(Duration.between(a.getDataHora(), horario).toMinutes()) < 60
                             );
+<<<<<<< HEAD
                             if (!ocupado && horario.isAfter(LocalDateTime.now())) {
                                 horariosDisponiveis.add(horario);
                             }
@@ -112,6 +139,17 @@ public class ReuniaoController {
                         }
                     } catch (Exception e) {
                         // ignora erro de parse
+=======
+
+                            if (!ocupado) {
+                                horariosDisponiveis.add(horario);
+                            }
+                            hora = hora.plusHours(1); // Incrementa de 1 em 1 hora
+                        }
+                    } catch (Exception e) {
+                        logger.error("Erro ao processar disponibilidade para o médico {}: {}", medico.getId(), e.getMessage());
+                        // ignora erro de parse para não quebrar a página
+>>>>>>> dev
                     }
                 }
             }
@@ -125,7 +163,11 @@ public class ReuniaoController {
                                  @RequestParam Long medicoId,
                                  @RequestParam(required = false) String data,
                                  @RequestParam(required = false) String hora,
+<<<<<<< HEAD
                                  @RequestParam String action,
+=======
+                                 @RequestParam(required = false) String action,
+>>>>>>> dev
                                  Model model) {
         if ("selecionar".equals(action)) {
             // Apenas recarrega o formulário com os dados atuais
@@ -304,4 +346,55 @@ public class ReuniaoController {
         }
         return "redirect:/reunioes?pacienteId=" + pacienteId;
     }
+<<<<<<< HEAD
+=======
+
+    @GetMapping("/api/horarios-disponiveis")
+    @ResponseBody
+    public List<String> getHorariosDisponiveis(@RequestParam Long medicoId, @RequestParam String data) {
+        logger.info("Buscando horários para medicoId: {} e data: {}", medicoId, data);
+        Medico medico = medicoRepository.findById(medicoId).orElse(null);
+        List<LocalDateTime> horarios = new ArrayList<>();
+
+        if (medico != null && data != null && !data.isEmpty()) {
+            try {
+                LocalDateTime dataSelecionada = LocalDate.parse(data).atStartOfDay();
+                DayOfWeek dayOfWeek = dataSelecionada.getDayOfWeek();
+                String diaSemanaDb = ValidationUtils.dayOfWeekToDbString(dayOfWeek);
+                logger.info("Data {} corresponde a {}", data, diaSemanaDb);
+
+                List<DisponibilidadeMedico> disponibilidades = disponibilidadeMedicoRepository.findByMedico(medico);
+                List<Agendamento> agendamentosNoDia = agendamentoRepository.findByMedicoAndDataHoraBetween(medico, dataSelecionada, dataSelecionada.plusDays(1).minusNanos(1));
+                logger.info("Médico {} tem {} agendamentos na data {}", medico.getId(), agendamentosNoDia.size(), data);
+
+                for (DisponibilidadeMedico disp : disponibilidades) {
+                    if (disp.getDiaSemana().equalsIgnoreCase(diaSemanaDb)) {
+                        LocalTime inicio = LocalTime.parse(disp.getHoraInicio());
+                        LocalTime fim = LocalTime.parse(disp.getHoraFim());
+                        LocalTime hora = inicio;
+
+                        while (hora.isBefore(fim)) {
+                            LocalDateTime horario = dataSelecionada.withHour(hora.getHour()).withMinute(hora.getMinute());
+                            
+                            boolean ocupado = agendamentosNoDia.stream().anyMatch(a ->
+                                Math.abs(Duration.between(a.getDataHora(), horario).toMinutes()) < 60
+                            );
+
+                            if (!ocupado && horario.isAfter(LocalDateTime.now())) {
+                                horarios.add(horario);
+                            }
+                            hora = hora.plusHours(1);
+                        }
+                    }
+                }
+                 logger.info("Encontrados {} horários disponíveis.", horarios.size());
+            } catch (Exception e) {
+                logger.error("Erro ao buscar horários para medicoId: " + medicoId, e);
+            }
+        }
+        return horarios.stream()
+                .map(h -> h.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm")))
+                .collect(Collectors.toList());
+    }
+>>>>>>> dev
 }

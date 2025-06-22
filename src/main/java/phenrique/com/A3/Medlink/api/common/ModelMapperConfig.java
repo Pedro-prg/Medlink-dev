@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 package phenrique.com.A3.Medlink.api.common;
 
 import org.modelmapper.ModelMapper;
@@ -12,3 +13,19 @@ public class ModelMapperConfig {
 		return new ModelMapper();
 	}
 }
+=======
+package phenrique.com.A3.Medlink.api.common;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class ModelMapperConfig {
+    
+    @Bean
+	ModelMapper modelMapper() {
+		return new ModelMapper();
+	}
+}
+>>>>>>> dev

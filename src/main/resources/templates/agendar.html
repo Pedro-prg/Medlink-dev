@@ -130,11 +130,18 @@
 
         <form th:action="@{/agendar}" method="post" id="agendarForm">
             <input type="hidden" name="pacienteId" th:value="${pacienteId}" />
+<<<<<<< HEAD
             <input type="hidden" name="action" id="actionInput" value="agendar" />
 
             <div class="form-group">
                 <label for="medicoId">Médico:</label>
                 <select id="medicoId" name="medicoId" required onchange="setActionAndSubmit('selecionar')">
+=======
+
+            <div class="form-group">
+                <label for="medicoId">Médico:</label>
+                <select id="medicoId" name="medicoId" required>
+>>>>>>> dev
                     <option value="">Selecione o médico</option>
                     <option th:each="m : ${medicos}"
                             th:value="${m.id}"
@@ -143,6 +150,7 @@
                 </select>
             </div>
 
+<<<<<<< HEAD
             <div class="form-group" th:if="${medicoId != null}">
                 <label for="data">Data:</label>
                 <input type="date" id="data" name="data" th:value="${data}" required onchange="setActionAndSubmit('selecionar')" />
@@ -163,10 +171,30 @@
             </div>
 
             <button type="submit" class="btn" th:if="${horariosDisponiveis != null and !horariosDisponiveis.empty}" onclick="setAction('agendar')">Agendar</button>
+=======
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" th:value="${data}" required />
+            </div>
+
+            <div id="horarios-container" class="form-group" style="display: none;">
+                <label for="hora">Horário disponível:</label>
+                <select id="hora" name="hora" required>
+                    <!-- Horários serão preenchidos via JS -->
+                </select>
+            </div>
+
+            <div id="no-horarios-msg" class="no-horarios" style="display: none;">
+                Não há horários disponíveis para este médico nesta data.
+            </div>
+
+            <button type="submit" id="agendarBtn" class="btn" style="display: none;">Agendar</button>
+>>>>>>> dev
         </form>
 
         <a th:href="@{/reunioes(pacienteId=${pacienteId})}" class="back-link">Voltar</a>
     </div>
+<<<<<<< HEAD
     <script>
         function setActionAndSubmit(action) {
             document.getElementById('actionInput').value = action;
@@ -175,6 +203,75 @@
         function setAction(action) {
             document.getElementById('actionInput').value = action;
         }
+=======
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const medicoSelect = document.getElementById('medicoId');
+            const dataInput = document.getElementById('data');
+            const horariosContainer = document.getElementById('horarios-container');
+            const horaSelect = document.getElementById('hora');
+            const noHorariosMsg = document.getElementById('no-horarios-msg');
+            const agendarBtn = document.getElementById('agendarBtn');
+
+            // Define a data mínima como hoje
+            const hoje = new Date().toISOString().split('T')[0];
+            dataInput.setAttribute('min', hoje);
+
+            function fetchHorarios() {
+                const medicoId = medicoSelect.value;
+                const data = dataInput.value;
+
+                if (!medicoId || !data) {
+                    horariosContainer.style.display = 'none';
+                    noHorariosMsg.style.display = 'none';
+                    agendarBtn.style.display = 'none';
+                    return;
+                }
+
+                fetch(`/api/horarios-disponiveis?medicoId=${medicoId}&data=${data}`)
+                    .then(response => response.json())
+                    .then(horarios => {
+                        horaSelect.innerHTML = ''; // Limpa horários antigos
+                        if (horarios.length > 0) {
+                            horariosContainer.style.display = 'block';
+                            noHorariosMsg.style.display = 'none';
+                            agendarBtn.style.display = 'block';
+                            
+                            const defaultOption = document.createElement('option');
+                            defaultOption.value = "";
+                            defaultOption.textContent = "Selecione um horário";
+                            horaSelect.appendChild(defaultOption);
+
+                            horarios.forEach(h => {
+                                const option = document.createElement('option');
+                                option.value = h;
+                                option.textContent = h;
+                                horaSelect.appendChild(option);
+                            });
+                        } else {
+                            horariosContainer.style.display = 'none';
+                            noHorariosMsg.style.display = 'block';
+                            agendarBtn.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar horários:', error);
+                        horariosContainer.style.display = 'none';
+                        noHorariosMsg.style.display = 'block';
+                        agendarBtn.style.display = 'none';
+                        noHorariosMsg.textContent = 'Erro ao carregar horários. Tente novamente.';
+                    });
+            }
+
+            medicoSelect.addEventListener('change', fetchHorarios);
+            dataInput.addEventListener('change', fetchHorarios);
+            
+            // Se já houver um médico e data selecionados ao carregar a página
+            if (medicoSelect.value && dataInput.value) {
+                fetchHorarios();
+            }
+        });
+>>>>>>> dev
     </script>
 </body>
 </html>
