@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Agendar Reunião - MedLink</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .agendar-container {
+            background: white;
+            padding: 2.5rem 2.5rem 2rem 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(44, 62, 80, 0.10);
+            width: 100%;
+            max-width: 500px;
+        }
+        h2 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .medico-info {
+            background: #ecf0f1;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .medico-info h3 {
+            color: #2980b9;
+            margin: 0 0 0.5rem 0;
+        }
+        .medico-info p {
+            margin: 0;
+            color: #34495e;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #34495e;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            background: #f9f9f9;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #3498db;
+            background: #fff;
+        }
+        .btn {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 6px;
+            background-color: #3498db;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 0.5rem;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 1.5rem;
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .error-message {
+            background: #e74c3c;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .no-horarios {
+            background: #f39c12;
+            color: white;
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        .horarios-count {
+            background: #27ae60;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="agendar-container">
+        <h2>Agendar Consulta</h2>
+
+        <!-- Mensagem de erro -->
+        <div class="error-message" th:if="${erro != null}" th:text="${erro}"></div>
+
+        <form th:action="@{/agendar}" method="post" id="agendarForm">
+            <input type="hidden" name="pacienteId" th:value="${pacienteId}" />
+
+            <div class="form-group">
+                <label for="medicoId">Médico:</label>
+                <select id="medicoId" name="medicoId" required>
+                    <option value="">Selecione o médico</option>
+                    <option th:each="m : ${medicos}"
+                            th:value="${m.id}"
+                            th:selected="${medicoId} == ${m.id}"
+                            th:text="${m.nome}"></option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="data">Data:</label>
+                <input type="date" id="data" name="data" th:value="${data}" required />
+            </div>
+
+            <div id="horarios-container" class="form-group" style="display: none;">
+                <label for="hora">Horário disponível:</label>
+                <select id="hora" name="hora" required>
+                    <!-- Horários serão preenchidos via JS -->
+                </select>
+            </div>
+
+            <div id="no-horarios-msg" class="no-horarios" style="display: none;">
+                Não há horários disponíveis para este médico nesta data.
+            </div>
+
+            <button type="submit" id="agendarBtn" class="btn" style="display: none;">Agendar</button>
+        </form>
+
+        <a th:href="@{/reunioes(pacienteId=${pacienteId})}" class="back-link">Voltar</a>
+    </div>
+    <script th:inline="javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            const medicoSelect = document.getElementById('medicoId');
+            const dataInput = document.getElementById('data');
+            const horariosContainer = document.getElementById('horarios-container');
+            const horaSelect = document.getElementById('hora');
+            const noHorariosMsg = document.getElementById('no-horarios-msg');
+            const agendarBtn = document.getElementById('agendarBtn');
+
+            // Define a data mínima como hoje
+            const hoje = new Date().toISOString().split('T')[0];
+            dataInput.setAttribute('min', hoje);
+
+            function fetchHorarios() {
+                const medicoId = medicoSelect.value;
+                const data = dataInput.value;
+
+                if (!medicoId || !data) {
+                    horariosContainer.style.display = 'none';
+                    noHorariosMsg.style.display = 'none';
+                    agendarBtn.style.display = 'none';
+                    return;
+                }
+
+                fetch(`/api/horarios-disponiveis?medicoId=${medicoId}&data=${data}`)
+                    .then(response => response.json())
+                    .then(horarios => {
+                        horaSelect.innerHTML = ''; // Limpa horários antigos
+                        if (horarios.length > 0) {
+                            horariosContainer.style.display = 'block';
+                            noHorariosMsg.style.display = 'none';
+                            agendarBtn.style.display = 'block';
+                            
+                            const defaultOption = document.createElement('option');
+                            defaultOption.value = "";
+                            defaultOption.textContent = "Selecione um horário";
+                            horaSelect.appendChild(defaultOption);
+
+                            horarios.forEach(h => {
+                                const option = document.createElement('option');
+                                option.value = h;
+                                option.textContent = h;
+                                horaSelect.appendChild(option);
+                            });
+                        } else {
+                            horariosContainer.style.display = 'none';
+                            noHorariosMsg.style.display = 'block';
+                            agendarBtn.style.display = 'none';
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar horários:', error);
+                        horariosContainer.style.display = 'none';
+                        noHorariosMsg.style.display = 'block';
+                        agendarBtn.style.display = 'none';
+                        noHorariosMsg.textContent = 'Erro ao carregar horários. Tente novamente.';
+                    });
+            }
+
+            medicoSelect.addEventListener('change', fetchHorarios);
+            dataInput.addEventListener('change', fetchHorarios);
+            
+            // Se já houver um médico e data selecionados ao carregar a página
+            if (medicoSelect.value && dataInput.value) {
+                fetchHorarios();
+            }
+        });
+    </script>
+</body>
+</html>
